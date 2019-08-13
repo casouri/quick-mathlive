@@ -1,0 +1,22 @@
+* Install
+#+BEGIN_SRC shell
+git clone https://github.com/casouri/quick-mathlive.git
+cd quick-mathlive
+npm install
+#+END_SRC
+
+* Usage
+#+BEGIN_SRC shell
+quick-mathlive start
+#+END_SRC
+This starts a server listening on local port. You can append an ampersand to make it run in the background.
+
+#+BEGIN_SRC
+quick-mathlive edit '\iota'
+#+END_SRC
+This send the latex text to the server, and the server will open a mathlive window in where you can edit math formulas.
+
+#+BEGIN_SRC shell
+quick-mathlive quit
+#+END_SRC
+This sends =QUIT= to the server and shuts it down.
