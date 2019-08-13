@@ -22,6 +22,20 @@ Run =M-x quick-mathlive= on math environments. Close the window and the change w
 
 * Command line
 #+BEGIN_SRC shell
+Usage: quick-mathlive [options] [command]
+
+Options:
+  -V, --version     output the version number
+  -p --port <port>  Port
+  -h, --help        output usage information
+
+Commands:
+  start             Start background process
+  edit [latex]      Edit Latex equations in mathlive
+  quit              Quit background process
+#+END_SRC
+
+#+BEGIN_SRC shell
 quick-mathlive start
 #+END_SRC
 This starts a server listening on local port. You can append an ampersand to make it run in the background.
