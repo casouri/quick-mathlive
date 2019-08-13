@@ -54,12 +54,15 @@
                                     nil (current-buffer)
                                     nil "edit" old-math-str))
                 (buffer-string)
-              nil))))
+              (let ((output (buffer-string)))
+                (with-current-buffer (get-buffer-create "*quick-mathlive-error*")
+                  (erase-buffer)
+                  (insert output)))))))
     (if new-math-str
         (progn (goto-char beg)
                (delete-region beg end)
                (insert new-math-str))
-      (message "Error calling mathlive, output: %s" ))))
+      (message "Error calling mathlive, see *quick-mathlive-error* for error message"))))
 
 (defun quick-mathlive--start-server ()
   "Start background server."
