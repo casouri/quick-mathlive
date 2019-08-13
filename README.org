@@ -5,16 +5,25 @@ cd quick-mathlive
 npm install
 #+END_SRC
 
+* Emacs
+Put =quick-mathlive.el= under somewhere in load-path.
+
+#+BEGIN_SRC emacs-lisp
+(require 'quick-mathlive)
+#+END_SRC
+
+Run =M-x quick-mathlive= on math environments. Close the window and the change will be applied.
+
 * Usage
 #+BEGIN_SRC shell
 quick-mathlive start
 #+END_SRC
 This starts a server listening on local port. You can append an ampersand to make it run in the background.
 
-#+BEGIN_SRC
+#+BEGIN_SRC shell
 quick-mathlive edit '\iota'
 #+END_SRC
-This send the latex text to the server, and the server will open a mathlive window in where you can edit math formulas.
+This send the latex text to the server, and the server will open a mathlive window in where you can edit math formulas. When you close the window the content is printed to standard output.
 
 #+BEGIN_SRC shell
 quick-mathlive quit

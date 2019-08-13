@@ -37,20 +37,41 @@
 ;;
 
 
+(defvar quick-mathlive--server-buffer "*quick-mathlive*"
+  "Buffer that quick-mathlive server process is attached to.")
+
 (defun quick-mathlive ()
   (interactive)
+  (unless (get-buffer-process quick-mathlive--server-buffer)
+    (quick-mathlive--start-server))
   (let* ((ret (quick-mathlive--tex-math-preview-bounds-of-tex-math))
          (beg (car ret))
          (end (cdr ret))
-         (new-math-str (shell-command-to-string
-                        (format "quick-mathlive edit '%s'"
-                                (buffer-substring-no-properties beg end)))))
+         (old-math-str (buffer-substring-no-properties beg end))
+         (new-math-str
+          (with-temp-buffer
+            (if (eq 0 (call-process "quick-mathlive"
+                                    nil (current-buffer)
+                                    nil "edit" old-math-str))
+                (buffer-string)
+              nil))))
+    (if new-math-str
+        (progn (goto-char beg)
+               (delete-region beg end)
+               (insert new-math-str))
+      (message "Error calling mathlive, output: %s" ))))
 
-    (goto-char beg)
-    (delete-region beg end)
-    (insert new-math-str)
-    ))
+(defun quick-mathlive--start-server ()
+  "Start background server."
+  (let ((process (start-process "quick-mathlive-server"
+                                (get-buffer-create quick-mathlive--server-buffer)
+                                "quick-mathlive" "start")))
+    (set-process-query-on-exit-flag process nil)))
 
+(defun quick-mathlive-quit-server ()
+  "Quit background server."
+  (interactive)
+  (interrupt-process quick-mathlive--server-buffer))
 
 (defun quick-mathlive--tex-math-preview-bounds-of-tex-math ()
   "A `bounds-of-thing-at-point' function for a TeX math expression.
