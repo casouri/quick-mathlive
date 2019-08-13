@@ -67,7 +67,9 @@ function startServer() {
     }
     process.exit()
   })
-    server.listen(Number(process.argv[2]) || 14467, 'localhost')
+  const port = Number(process.argv[2]) || 14467
+  server.listen(port, 'localhost')
+  console.log(`Listening on port ${port || 14467}, Send ^C to exit.`)
 }
 
 app.on('ready', startServer)

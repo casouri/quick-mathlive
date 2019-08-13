@@ -34,7 +34,6 @@ program
   .command('start')
   .description('Start background process')
   .action(() => {
-    console.log(`Listening on port ${program.port || 14467}, Send ^C to exit.`)
     child_process.execFileSync(electron,
       [__dirname, program.port], {
         stdio: [process.stdin,

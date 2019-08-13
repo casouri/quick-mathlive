@@ -42,36 +42,37 @@
 
 (defun quick-mathlive ()
   (interactive)
-  (unless (get-buffer-process quick-mathlive--server-buffer)
-    (quick-mathlive--start-server)
-    ;; wait for server to sartup
-    (sleep-for 0.5))
-  (let* ((ret (quick-mathlive--tex-math-preview-bounds-of-tex-math))
-         (beg (car ret))
-         (end (cdr ret))
-         (old-math-str (buffer-substring-no-properties beg end))
-         (new-math-str
-          (with-temp-buffer
-            (if (eq 0 (call-process "quick-mathlive"
-                                    nil (current-buffer)
-                                    nil "edit" old-math-str))
-                (buffer-string)
-              (let ((output (buffer-string)))
-                (with-current-buffer (get-buffer-create "*quick-mathlive-error*")
+  (if (not (process-live-p
+            (get-buffer-process quick-mathlive--server-buffer)))
+      (if (not (quick-mathlive--start-server))
+          (message "Server didn’t start in 5 seconds")
+        (let* ((ret (quick-mathlive--tex-math-preview-bounds-of-tex-math))
+               (beg (car ret))
+               (end (cdr ret))
+               (old-math-str (buffer-substring-no-properties beg end))
+               (new-math-str
+                (with-current-buffer (get-buffer-create "*quick-mathlive-output*")
                   (erase-buffer)
-                  (insert output)))))))
-    (if new-math-str
-        (progn (goto-char beg)
-               (delete-region beg end)
-               (insert new-math-str))
-      (message "Error calling mathlive, see *quick-mathlive-error* for error message"))))
+                  (if (eq 0 (call-process "quick-mathlive"
+                                          nil (current-buffer)
+                                          nil "edit" old-math-str))
+                      (buffer-string)
+                    nil))))
+          (if new-math-str
+              (progn (goto-char beg)
+                     (delete-region beg end)
+                     (insert new-math-str))
+            (message "Error calling mathlive, see *quick-mathlive-output* for error message"))))))
 
 (defun quick-mathlive--start-server ()
-  "Start background server."
+  "Start background server.
+Return non-nil if server started successfully in 5 seconds,
+nil otherwise."
   (let ((process (start-process "quick-mathlive-server"
                                 (get-buffer-create quick-mathlive--server-buffer)
                                 "quick-mathlive" "start")))
-    (set-process-query-on-exit-flag process nil)))
+    (set-process-query-on-exit-flag process nil)
+    (accept-process-output process 5)))
 
 (defun quick-mathlive-quit-server ()
   "Quit background server."
