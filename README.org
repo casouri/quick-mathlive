@@ -2,6 +2,8 @@
 
 This is a command line tool wrapper around [[https://mathlive.io/deploy/index.html][mathlive]].
 
+[[./quick-mathlive.gif]]
+
 * Install
 #+BEGIN_SRC shell
 git clone https://github.com/casouri/quick-mathlive.git
@@ -18,7 +20,7 @@ Put =quick-mathlive.el= under somewhere in load-path.
 
 Run =M-x quick-mathlive= on math environments. Close the window and the change will be applied. If you want to shutdown the background process, use ~quick-mathlive-quit-server~.
 
-* Usage
+* Command line
 #+BEGIN_SRC shell
 quick-mathlive start
 #+END_SRC
@@ -27,7 +29,7 @@ This starts a server listening on local port. You can append an ampersand to mak
 #+BEGIN_SRC shell
 quick-mathlive edit '\iota'
 #+END_SRC
-This send the latex text to the server, and the server will open a mathlive window in where you can edit math formulas. When you close the window the content is printed to standard output.
+This send the latex text to the server, and the server will open a mathlive window in where you can edit math formulas. When you close the window the modified content is printed to standard output.
 
 #+BEGIN_SRC shell
 quick-mathlive quit
