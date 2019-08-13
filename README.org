@@ -1,3 +1,7 @@
+#+TITLE: quick mathlive
+
+This is a command line tool wrapper around [[https://mathlive.io/deploy/index.html][mathlive]].
+
 * Install
 #+BEGIN_SRC shell
 git clone https://github.com/casouri/quick-mathlive.git
@@ -12,7 +16,7 @@ Put =quick-mathlive.el= under somewhere in load-path.
 (require 'quick-mathlive)
 #+END_SRC
 
-Run =M-x quick-mathlive= on math environments. Close the window and the change will be applied.
+Run =M-x quick-mathlive= on math environments. Close the window and the change will be applied. If you want to shutdown the background process, use ~quick-mathlive-quit-server~.
 
 * Usage
 #+BEGIN_SRC shell
