@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const net = require('net');
 
-function createWindow (text, socket) {
+function createWindow(text, socket) {
   // Create the browser window.
   let win = new BrowserWindow({
     width: 400,
@@ -12,7 +12,7 @@ function createWindow (text, socket) {
   })
 
   // don’t quit when all windows closed
-  app.on('window-all-closed', e => e.preventDefault() )
+  app.on('window-all-closed', e => e.preventDefault())
 
   // and load the index.html of the app.
   win.loadFile('index.html')
@@ -49,16 +49,25 @@ function createWindow (text, socket) {
 function startServer() {
   const server = net.createServer((socket) => {
     socket.setEncoding('utf-8')
+    socket.on('error', console.error)
     socket.once('data', (data) => {
       if (data === 'QUIT') {
         console.log('server: receive QUIT')
-        server.close(() => { app.quit() })
+        server.close(app.quit)
       } else {
         createWindow(data, socket)
       }
     })
   })
-  server.listen(14467, 'localhost')
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.log('Default address 14467 is in use. Try another one with -p flag.')
+    } else {
+      console.error(err)
+    }
+    process.exit()
+  })
+    server.listen(Number(process.argv[2]) || 14467, 'localhost')
 }
 
 app.on('ready', startServer)
