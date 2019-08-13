@@ -43,7 +43,9 @@
 (defun quick-mathlive ()
   (interactive)
   (unless (get-buffer-process quick-mathlive--server-buffer)
-    (quick-mathlive--start-server))
+    (quick-mathlive--start-server)
+    ;; wait for server to sartup
+    (sleep-for 0.5))
   (let* ((ret (quick-mathlive--tex-math-preview-bounds-of-tex-math))
          (beg (car ret))
          (end (cdr ret))
