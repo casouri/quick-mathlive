@@ -16,7 +16,14 @@ function sendText(text) {
   })
   // return when socket close
   sock.on('close', process.exit)
-  sock.on('error', console.log)
+  sock.on('error', (err) => {
+    if (err.code === 'ECONNREFUSED') {
+      console.log('Connection refused, either server is not running or port is incorrect.')
+    } else {
+      console.error(err)
+    }
+    process.exit(1)
+  })
   sock.write(text)
 }
 
@@ -64,8 +71,8 @@ program
 program.option('-p --port <port>', 'Port')
 
 program.on('command:*', () => {
-  console.error('Invalid command: %s\nSee --help for a list of available commands.', program.args.join(' '));
-  process.exit(1);
+  console.error('Invalid command: %s\nSee --help for a list of available commands.', program.args.join(' '))
+  process.exit(1)
 })
 
 program.parse(process.argv)
